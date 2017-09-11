@@ -250,3 +250,8 @@ vendor/*
 /composer.lock
 
 /example-one/vendor/*
+/example-one/composer.lock
+
+/example-two/vendor/*
+/example-two/composer.lock
+
