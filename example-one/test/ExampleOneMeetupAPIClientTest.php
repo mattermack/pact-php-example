@@ -5,38 +5,40 @@ require_once(__DIR__ . '/MockHttpClient.php');
 
 use PHPUnit\Framework\TestCase;
 
-class MeetupAPIClientTest extends TestCase
+class ExampleOneMeetupAPIClientTest extends TestCase
 {
 
     /**
      * @var \PhpPact\PactBuilder
      */
-    protected $_build;
+    protected static $build;
 
     const TEST_URL = "https://api.meetup.com";
     const CONSUMER_NAME = "ExampleOneMeetupApiClient";
     const PROVIDER_NAME = "MeetupAPI";
+    const PACT_DIR = "D:\\Temp\\pact-examples\\";
+    const version = '2';
 
-
-    /**
-     * Before each test, rebuild the builder
-     */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        parent::setUp();
         $config = new \PhpPact\PactConfig();
-        $config->setBaseUri(MeetupAPIClientTest::TEST_URL);
+        $config->setBaseUri(self::TEST_URL);
+        $config->setPactDir(self::PACT_DIR);
 
-        $this->_build = new \PhpPact\PactBuilder($config);
-        $this->_build->ServiceConsumer(self::CONSUMER_NAME)
+        self::$build = new \PhpPact\PactBuilder($config);
+        self::$build->ServiceConsumer(self::CONSUMER_NAME)
             ->HasPactWith(self::PROVIDER_NAME);
     }
 
-    protected function tearDown()
+    public static function tearDownAfterClass()
     {
-        parent::tearDown();
+        $mockService = self::$build->getMockService();
 
-        unset($this->_build);
+        $pact = $mockService->getPactFile();
+        $pact->setProvider(new \PhpPact\Models\Pacticipant(self::PROVIDER_NAME));
+        $pact->setConsumer(new \PhpPact\Models\Pacticipant(self::CONSUMER_NAME));
+
+        self::$build->Build($pact);
     }
 
     public function testCategories()
@@ -45,7 +47,7 @@ class MeetupAPIClientTest extends TestCase
         $reqHeaders = array();
         $reqHeaders["Content-Type"] = "application/json";
         $method = \PhpPact\Mocks\MockHttpService\Models\HttpVerb::GET;
-        $path = '/' . ExampleOneMeetupApiClient::version . '/categories';
+        $path = '/' . self::version . '/categories';
         $request = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($method, $path, $reqHeaders);
 
         // build the response
@@ -57,7 +59,7 @@ class MeetupAPIClientTest extends TestCase
 
 
         // build up the expected results and appropriate responses
-        $mockService = $this->_build->getMockService();
+        $mockService = self::$build->getMockService();
         $mockService->Given("General Meetup Categories")
             ->UponReceiving("A GET request to return JSON using Meetups category api under version 2")
             ->With($request)
@@ -70,7 +72,7 @@ class MeetupAPIClientTest extends TestCase
 
         // build system under test
         // inject the http client and mock server
-        $client = new ExampleOneMeetupApiClient($httpClient, MeetupAPIClientTest::TEST_URL);
+        $client = new ExampleOneMeetupApiClient($httpClient, self::TEST_URL);
         $response = $client->categories();
 
 
@@ -80,5 +82,15 @@ class MeetupAPIClientTest extends TestCase
         // do something with the body returned
         $body = (string) $response->getBody();
         $this->assertTrue((json_decode($body) ? true : false), "Expect the JSON to be decoded without error");
+
+        // verify the interactions
+        $hasException = false;
+        try {
+            $results = $mockService->VerifyInteractions();
+
+        } catch (\PhpPact\PactFailureException $e) {
+            $hasException = true;
+        }
+        $this->assertFalse($hasException, "This categories call get should verify the interactions and not throw an exception");
     }
 }

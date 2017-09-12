@@ -255,3 +255,5 @@ vendor/*
 /example-two/vendor/*
 /example-two/composer.lock
 
+/example-api/vendor/*
+/example-api/composer.lock
