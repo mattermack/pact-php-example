@@ -56,6 +56,9 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * @test
+     */
     public function testCities()
     {
         // build the request
@@ -109,6 +112,9 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         $this->assertFalse($hasException, "This cities call get should verify the interactions and not throw an exception");
     }
 
+    /**
+     * @test
+     */
     public function testDashboard()
     {
         // build the request

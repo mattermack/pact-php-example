@@ -41,6 +41,10 @@ class ExampleOneMeetupAPIClientTest extends TestCase
         self::$build->Build($pact);
     }
 
+
+    /**
+     * @test
+     */
     public function testCategories()
     {
         // build the request
