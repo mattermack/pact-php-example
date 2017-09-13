@@ -1,202 +1,210 @@
+
 {
-    "swagger": "2.0",
-    "info": {
-        "version": "0.0.1",
-        "title": "Austin Meetup Swagger API"
-    },
-    "host": "playground.apistudio.io",
-    "basePath": "/try/5ef1c253-9c21-46fe-876f-191c3d1de5c4",
-    "schemes": [
-        "http",
-        "https"
-    ],
-    "consumes": [
-        "application/json"
-    ],
-    "produces": [
-        "application/json"
-    ],
-    "paths": {
-        "/dashboard": {
-            "get": {
-                "description": "Get all `Dashboard`.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Dashboard"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-		"/2/categories": {
-            "get": {
-                "description": "Get all `Categories`.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Categories"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/2/cities": {
-            "get": {
-                "description": "Get all `Cities`.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Cities"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/2/photos": {
-            "get": {
-                "description": "Get all `Photos`.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Photos"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "Categories": {
-            "type": "object",
-            "properties": {
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "sort_name": {
-                                "type": "string"
-                            },
-                            "id": {
-                                "type": "integer"
-                            },
-                            "shortname": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "Dashboard": {
-            "type": "object",
-            "properties": {
-                "stats": {
-                    "type": "object",
-                    "properties": {
-                        "city_top_groups": {
-                            "type": "integer"
-                        },
-                        "global_top_groups": {
-                            "type": "integer"
-                        },
-                        "upcoming_events": {
-                            "type": "integer"
-                        },
-                        "memberships": {
-                            "type": "integer"
-                        },
-                        "nearby_events": {
-                            "type": "integer"
-                        }
-                    }
-                }
-            }
-        },
-        "Cities": {
-            "type": "object",
-            "properties": {
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "zip": {
-                                "type": "string"
-                            },
-                            "country": {
-                                "type": "string"
-                            },
-                            "localized_country_name": {
-                                "type": "string"
-                            },
-                            "distance": {
-                                "type": "number"
-                            },
-                            "city": {
-                                "type": "string"
-                            },
-                            "lon": {
-                                "type": "number"
-                            },
-                            "ranking": {
-                                "type": "integer"
-                            },
-                            "id": {
-                                "type": "integer"
-                            },
-                            "state": {
-                                "type": "string"
-                            },
-                            "member_count": {
-                                "type": "integer"
-                            },
-                            "lat": {
-                                "type": "number"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "Photos": {
-            "type": "object",
-            "properties": {
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "file": {
-                                "type": "string"
-                            },
-                            "description": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	"swagger": "2.0",
+	"info":
+	{
+		"version": "1.0.1",
+		"title": "Austin Meetup Swagger API"
+	},
+	"tags": [
+		{
+			"name": "Meetup",
+			"description": "Mock of Meetup.com for Austin PHP Meetup"
+		}
+	],
+	"schemes": [
+		"http"
+	],
+	"paths":
+	{
+		"/dashboard":
+		{
+			"get":
+			{
+				"tags": [
+					"Meetup"
+				],
+				"summary": "Returns all possible dashboards",
+				"description": "Returns a json payload of dashboard",
+				"operationId": "GetDashboard",
+				"produces": [
+					"application/json"
+				],
+				"consumes": [
+					"application/json"
+				],
+
+				"responses":
+				{
+					"200":
+					{
+						"description": "OK",
+						"schema":
+						{
+							"$ref": "#/definitions/Dashboard"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions":
+	{
+		"Categories":
+		{
+			"type": "object",
+			"properties":
+			{
+				"results":
+				{
+					"type": "array",
+					"items":
+					{
+						"type": "object",
+						"properties":
+						{
+							"name":
+							{
+								"type": "string"
+							},
+							"sort_name":
+							{
+								"type": "string"
+							},
+							"id":
+							{
+								"type": "integer"
+							},
+							"shortname":
+							{
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"Dashboard":
+		{
+			"type": "object",
+			"properties":
+			{
+				"stats":
+				{
+					"type": "object",
+					"properties":
+					{
+						"city_top_groups":
+						{
+							"type": "integer"
+						},
+						"global_top_groups":
+						{
+							"type": "integer"
+						},
+						"upcoming_events":
+						{
+							"type": "integer"
+						},
+						"memberships":
+						{
+							"type": "integer"
+						},
+						"nearby_events":
+						{
+							"type": "integer"
+						}
+					}
+				}
+			}
+		},
+		"Cities":
+		{
+			"type": "object",
+			"properties":
+			{
+				"results":
+				{
+					"type": "array",
+					"items":
+					{
+						"type": "object",
+						"properties":
+						{
+							"zip":
+							{
+								"type": "string"
+							},
+							"country":
+							{
+								"type": "string"
+							},
+							"localized_country_name":
+							{
+								"type": "string"
+							},
+							"distance":
+							{
+								"type": "number"
+							},
+							"city":
+							{
+								"type": "string"
+							},
+							"lon":
+							{
+								"type": "number"
+							},
+							"ranking":
+							{
+								"type": "integer"
+							},
+							"id":
+							{
+								"type": "integer"
+							},
+							"state":
+							{
+								"type": "string"
+							},
+							"member_count":
+							{
+								"type": "integer"
+							},
+							"lat":
+							{
+								"type": "number"
+							}
+						}
+					}
+				}
+			}
+		},
+		"Photos":
+		{
+			"type": "object",
+			"properties":
+			{
+				"results":
+				{
+					"type": "array",
+					"items":
+					{
+						"type": "object",
+						"properties":
+						{
+							"file":
+							{
+								"type": "string"
+							},
+							"description":
+							{
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
