@@ -2,4 +2,8 @@
 
 header('Content-Type: application/json');
 
-echo "{'hello' : 'world'}";
+?>
+{
+   "hello" : "pact!"
+
+}
