@@ -46,6 +46,90 @@
 					}
 				}
 			}
+		},
+		"/2/categories":
+		{
+			"get":
+			{
+				"tags": [
+					"Meetup"
+				],
+				"summary": "Pull all catergories",
+				"operationId": "GetCategories",
+				"produces": [
+					"application/json"
+				],
+				"consumes": [
+					"application/json"
+				],
+				"responses":
+				{
+					"200":
+					{
+						"description": "successful operation",
+						"schema":
+						{
+							"$ref": "#/definitions/Categories"
+						}
+					}
+				}
+			}
+		},
+		"/2/cities":
+		{
+			"get":
+			{
+				"tags": [
+					"Meetup"
+				],
+				"summary": "Pull all cities",
+				"operationId": "getCities",
+				"produces": [
+					"application/json"
+				],
+				"consumes": [
+					"application/json"
+				],
+				"responses":
+				{
+					"200":
+					{
+						"description": "successful operation",
+						"schema":
+						{
+							"$ref": "#/definitions/Cities"
+						}
+					}
+				}
+			}
+		},
+		"/2/photos":
+		{
+			"get":
+			{
+				"tags": [
+					"Meetup"
+				],
+				"summary": "Pull all photos",
+				"operationId": "getPhotos",
+				"produces": [
+					"application/json"
+				],
+				"consumes": [
+					"application/json"
+				],
+				"responses":
+				{
+					"200":
+					{
+						"description": "successful operation",
+						"schema":
+						{
+							"$ref": "#/definitions/Photos"
+						}
+					}
+				}
+			}
 		}
 	},
 	"definitions":
