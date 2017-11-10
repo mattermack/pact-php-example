@@ -4,6 +4,10 @@ require_once(__DIR__ . '/../src/ExampleTwoMeetupApiClient.php');
 require_once(__DIR__ . '/../../example-one/test/MockHttpClient.php'); // <---- totally hi-jacking example one
 
 use PHPUnit\Framework\TestCase;
+use PhpPact\Models\Pacticipant;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
+use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
 
 class ExampleTwoMeetupAPIClientTest extends TestCase
 {
@@ -27,8 +31,8 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         $config->setPactDir(self::PACT_DIR);
 
         self::$build = new \PhpPact\PactBuilder($config);
-        self::$build->ServiceConsumer(self::CONSUMER_NAME)
-            ->HasPactWith(self::PROVIDER_NAME);
+        self::$build->serviceConsumer(self::CONSUMER_NAME)
+            ->hasPactWith(self::PROVIDER_NAME);
     }
 
     public static function tearDownAfterClass()
@@ -36,10 +40,10 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         $mockService = self::$build->getMockService();
 
         $pact = $mockService->getPactFile();
-        $pact->setProvider(new \PhpPact\Models\Pacticipant(self::PROVIDER_NAME));
-        $pact->setConsumer(new \PhpPact\Models\Pacticipant(self::CONSUMER_NAME));
+        $pact->setProvider(new Pacticipant(self::PROVIDER_NAME));
+        $pact->setConsumer(new Pacticipant(self::CONSUMER_NAME));
 
-        self::$build->Build($pact);
+        self::$build->build($pact);
     }
 
 
@@ -64,24 +68,24 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         // build the request
         $reqHeaders = array();
         $reqHeaders["Content-Type"] = "application/json";
-        $method = \PhpPact\Mocks\MockHttpService\Models\HttpVerb::GET;
+        $method = HttpVerb::GET;
         $path = '/' . self::version . '/cities';
-        $request = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($method, $path, $reqHeaders);
+        $request = new ProviderServiceRequest($method, $path, $reqHeaders);
 
         // build the response
         $resHeaders = array();
         $resHeaders["Content-Type"] = "application/json";
 
-        $response = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse('200', $resHeaders);
+        $response = new ProviderServiceResponse('200', $resHeaders);
         $response->setBody("{\"results\":[{\"zip\":\"73301\",\"country\":\"us\",\"localized_country_name\":\"USA\",\"distance\":1.8526514121759305,\"city\":\"Austin\",\"lon\":-97.75,\"ranking\":0,\"id\":73301,\"state\":\"TX\",\"member_count\":57163,\"lat\":30.219999313354492},{\"zip\":\"78664\",\"country\":\"us\",\"localized_country_name\":\"USA\",\"distance\":19.468625978898555,\"city\":\"Round Rock\",\"lon\":-97.66999816894531,\"ranking\":1,\"id\":78664,\"state\":\"TX\",\"member_count\":3342,\"lat\":30.510000228881836}]}");
 
 
         // build up the expected results and appropriate responses
         $mockService = self::$build->getMockService();
-        $mockService->Given("General Meetup Cities")
-            ->UponReceiving("A GET request to return JSON using Meetups city api under version 2")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("General Meetup Cities")
+            ->uponReceiving("A GET request to return JSON using Meetups city api under version 2")
+            ->with($request)
+            ->willRespondWith($response);
 
 
         // set the host for the httpClient
@@ -104,7 +108,7 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $results = $mockService->VerifyInteractions();
+            $results = $mockService->verifyInteractions();
 
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
@@ -120,9 +124,9 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         // build the request
         $reqHeaders = array();
         $reqHeaders["Content-Type"] = "application/json";
-        $method = \PhpPact\Mocks\MockHttpService\Models\HttpVerb::GET;
+        $method = HttpVerb::GET;
         $path = '/dashboard';
-        $request = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($method, $path, $reqHeaders);
+        $request = new ProviderServiceRequest($method, $path, $reqHeaders);
 
         // build the response
         $resHeaders = array();
@@ -133,10 +137,10 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = self::$build->getMockService();
-        $mockService->Given("General Meetup Dashboard")
-            ->UponReceiving("A GET request to return JSON using Meetups Dashboard that is version agnostic")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("General Meetup Dashboard")
+            ->uponReceiving("A GET request to return JSON using Meetups Dashboard that is version agnostic")
+            ->with($request)
+            ->willRespondWith($response);
 
         // set the host for the httpClient
         $host = $mockService->getHost();
@@ -154,7 +158,7 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $results = $mockService->VerifyInteractions();
+            $results = $mockService->verifyInteractions();
 
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;

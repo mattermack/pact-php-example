@@ -37,11 +37,11 @@ class ExampleApiServerTest extends TestCase
 
             // could be build an object mapper to make this easier
 
-            $pactVerifier->ProviderState("General Meetup Categories")
-                ->ServiceProvider("MeetupApi", $httpClient)
-                ->HonoursPactWith("ExampleOneMeetupApiClient")
-                ->PactUri($json)
-                ->Verify();
+            $pactVerifier->providerState("General Meetup Categories")
+                ->serviceProvider("MeetupApi", $httpClient)
+                ->honoursPactWith("ExampleOneMeetupApiClient")
+                ->pactUri($json)
+                ->verify();
 
         }catch(\PhpPact\PactFailureException $e) {
             $hasException = true;
@@ -68,7 +68,7 @@ class ExampleApiServerTest extends TestCase
             $absolutePath .= '/' . $fileName;
 
 
-            file_put_contents($absolutePath, $this->DashboardState());
+            file_put_contents($absolutePath, $this->dashboardState());
         };
 
 
@@ -76,11 +76,11 @@ class ExampleApiServerTest extends TestCase
         try {
             $json = self::PACT_DIR . 'exampletwomeetupapiclient-meetupapi.json';
 
-            $pactVerifier->ProviderState("General Meetup Dashboard", $setUpFunction)
-                ->ServiceProvider("MeetupApi", $httpClient)
-                ->HonoursPactWith("ExampleTwoMeetupApiClient")
-                ->PactUri($json)
-                ->Verify(); // note that this should test all as we can run setup and tear down
+            $pactVerifier->providerState("General Meetup Dashboard", $setUpFunction)
+                ->serviceProvider("MeetupApi", $httpClient)
+                ->honoursPactWith("ExampleTwoMeetupApiClient")
+                ->pactUri($json)
+                ->verify(); // note that this should test all as we can run setup and tear down
 
         }catch(\PhpPact\PactFailureException $e) {
             $hasException = true;
@@ -88,7 +88,7 @@ class ExampleApiServerTest extends TestCase
         $this->assertFalse($hasException, "Expect Pact to validate.");
     }
 
-    private function DashboardState()
+    private function dashboardState()
     {
         $str = <<<STR
 <?php

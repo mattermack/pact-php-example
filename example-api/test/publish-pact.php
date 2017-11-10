@@ -8,9 +8,9 @@ $connector = new \PhpPact\PactBrokerConnector($uriOptions);
 $dir = "D:\\Temp\\pact-examples\\";
 $file = $dir . "exampleonemeetupapiclient-meetupapi.json";
 
-$statusCode = $connector->PublishFile($file, '1.0.1');
+$statusCode = $connector->publishFile($file, '1.0.1');
 
 $dir = "D:\\Temp\\pact-examples\\";
 $file = $dir . "exampletwomeetupapiclient-meetupapi.json";
 
-$statusCode = $connector->PublishFile($file, '3.1.7');
+$statusCode = $connector->publishFile($file, '3.1.7');

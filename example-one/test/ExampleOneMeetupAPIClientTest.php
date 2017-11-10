@@ -4,6 +4,12 @@ require_once(__DIR__ . '/../src/ExampleOneMeetupApiClient.php');
 require_once(__DIR__ . '/MockHttpClient.php');
 
 use PHPUnit\Framework\TestCase;
+use PhpPact\Models\Pacticipant;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
+use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
+use PhpPact\Matchers\Rules\MatchingRule;
+use PhpPact\Matchers\Rules\MatcherRuleTypes;
 
 class ExampleOneMeetupAPIClientTest extends TestCase
 {
@@ -26,8 +32,8 @@ class ExampleOneMeetupAPIClientTest extends TestCase
         $config->setPactDir(self::PACT_DIR);
 
         self::$build = new \PhpPact\PactBuilder($config);
-        self::$build->ServiceConsumer(self::CONSUMER_NAME)
-            ->HasPactWith(self::PROVIDER_NAME);
+        self::$build->serviceConsumer(self::CONSUMER_NAME)
+            ->hasPactWith(self::PROVIDER_NAME);
     }
 
     public static function tearDownAfterClass()
@@ -35,10 +41,10 @@ class ExampleOneMeetupAPIClientTest extends TestCase
         $mockService = self::$build->getMockService();
 
         $pact = $mockService->getPactFile();
-        $pact->setProvider(new \PhpPact\Models\Pacticipant(self::PROVIDER_NAME));
-        $pact->setConsumer(new \PhpPact\Models\Pacticipant(self::CONSUMER_NAME));
+        $pact->setProvider(new Pacticipant(self::PROVIDER_NAME));
+        $pact->setConsumer(new Pacticipant(self::CONSUMER_NAME));
 
-        self::$build->Build($pact);
+        self::$build->build($pact);
     }
 
 
@@ -50,24 +56,32 @@ class ExampleOneMeetupAPIClientTest extends TestCase
         // build the request
         $reqHeaders = array();
         $reqHeaders["Content-Type"] = "application/json";
-        $method = \PhpPact\Mocks\MockHttpService\Models\HttpVerb::GET;
+        $method = HttpVerb::GET;
         $path = '/' . self::version . '/categories';
-        $request = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($method, $path, $reqHeaders);
+        $request = new ProviderServiceRequest($method, $path, $reqHeaders);
 
         // build the response
         $resHeaders = array();
         $resHeaders["Content-Type"] = "application/json";
 
-        $response = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse('200', $resHeaders);
-        $response->setBody("{\"results\":[{\"name\":\"Games\",\"sort_name\":\"Games\",\"id\":11,\"shortname\":\"Games\"},{\"name\":\"Book Clubs\",\"sort_name\":\"Book Clubs\",\"id\":18,\"shortname\":\"Book Clubs\"}]}");
+        $response = new ProviderServiceResponse('200', $resHeaders);
+        $jsonBody = \json_decode("{\"results\":[{\"name\":\"Games\",\"sort_name\":\"Games\",\"id\":11,\"shortname\":\"Games\"},{\"name\":\"Book Clubs\",\"sort_name\":\"Book Clubs\",\"id\":18,\"shortname\":\"Book Clubs\"}]}");
+        $response->setBody(\json_encode($jsonBody));
 
+        $resMatchers = array();
+        $resMatchers['$.body.results'] = new MatchingRule('$.body.results[*].name', array(
+                MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::REGEX_TYPE,
+                MatcherRuleTypes::REGEX_PATTERN => 'Games|Book Clubs')
+        );
+
+        $response->setMatchingRules($resMatchers);
 
         // build up the expected results and appropriate responses
         $mockService = self::$build->getMockService();
-        $mockService->Given("General Meetup Categories")
-            ->UponReceiving("A GET request to return JSON using Meetups category api under version 2")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("General Meetup Categories")
+            ->uponReceiving("A GET request to return JSON using Meetups category api under version 2")
+            ->with($request)
+            ->willRespondWith($response);
 
 
         // set the host for the httpClient
@@ -90,7 +104,7 @@ class ExampleOneMeetupAPIClientTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $results = $mockService->VerifyInteractions();
+            $results = $mockService->verifyInteractions();
 
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;

@@ -23,7 +23,8 @@ echo sprintf(
 
 // Kill the web server when the process ends
 register_shutdown_function(function() use ($pid) {
-    sleep(120); // sleep for a few seconds before shutting down
+    echo sprintf('Sleeping for 10 seconds') . PHP_EOL;
+    sleep(10); // sleep for a few seconds before shutting down
     echo sprintf('%s - Killing process with ID %d', date('r'), $pid) . PHP_EOL;
     shell_exec("taskkill /F /PID $pid");
 });

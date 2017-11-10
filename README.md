@@ -3,7 +3,7 @@
 Examples for [Pact-PHP](https://github.com/pact-foundation/pact-php/) for Austin PHP Meetup
 
 ### Example One 
-Assume we use the Meetup.com API to pull `categories` version 2.   Build a mock and publish a PACT
+Assume we use the Meetup.com API to pull `categories` version 2.   Build a mock and publish a PACT.   This uses Pact PHP 2.0 matchers
 
 ### Example Two 
 Assume we use the Meetup.com API to pull `cities` on version 2 and `dashboards`.   Build a mock and publish a PACT

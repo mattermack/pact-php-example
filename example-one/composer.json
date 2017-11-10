@@ -1,8 +1,16 @@
 {
-    "require": {
-        "mattersight/phppact": "^1.0"
-    },
-	"require-dev": {
-	    "phpunit/phpunit": "^6.2"
-	}
+  "prefer-stable": true,
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/mattermack/JsonPath"
+    }
+  ],
+  "require": {
+    "mattersight/phppact": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.2"
+  }
 }
