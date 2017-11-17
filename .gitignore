@@ -256,4 +256,6 @@ vendor/*
 /example-two/composer.lock
 
 /example-api/vendor/*
+/example-guzzle/vendor/*
 /example-api/composer.lock
+/example-guzzle/composer.lock
