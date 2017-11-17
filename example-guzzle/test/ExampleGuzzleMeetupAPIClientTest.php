@@ -10,6 +10,9 @@ use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
 use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
 use PhpPact\Matchers\Rules\MatchingRule;
 use PhpPact\Matchers\Rules\MatcherRuleTypes;
+use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper;
+use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper;
+
 
 class ExampleGuzzleMeetupAPIClientTest extends TestCase
 {
@@ -44,6 +47,8 @@ class ExampleGuzzleMeetupAPIClientTest extends TestCase
         $pact->setProvider(new Pacticipant(self::PROVIDER_NAME));
         $pact->setConsumer(new Pacticipant(self::CONSUMER_NAME));
 
+        error_log(print_r($pact, true));
+        
         self::$build->build($pact);
     }
 
@@ -54,20 +59,21 @@ class ExampleGuzzleMeetupAPIClientTest extends TestCase
     public function testCategories()
     {
         // build the request
-        $reqHeaders = array();
-        $reqHeaders["Content-Type"] = "application/json";
-        $method = HttpVerb::GET;
-        $path = '/' . self::version . '/categories';
-        $request = new ProviderServiceRequest($method, $path, $reqHeaders);
-
+        $fullUrl =  self::TEST_URL . '/' . ExampleGuzzleMeetupApiClient::version . '/categories';
+        $headers = array("Content-Type" => "application/json");
+        $httpRequest = (new \GuzzleHttp\Psr7\Request( HttpVerb::GET , $fullUrl, $headers));
+        
+        // convert the request
+        $requestMapper = new ProviderServiceRequestMapper();
+        $request = $requestMapper->convert($httpRequest);
+       
         // build the response
-        $resHeaders = array();
-        $resHeaders["Content-Type"] = "application/json";
-
-        $response = new ProviderServiceResponse('200', $resHeaders);
-        $jsonBody = \json_decode("{\"results\":[{\"name\":\"Games\",\"sort_name\":\"Games\",\"id\":11,\"shortname\":\"Games\"},{\"name\":\"Book Clubs\",\"sort_name\":\"Book Clubs\",\"id\":18,\"shortname\":\"Book Clubs\"}]}");
-        $response->setBody(\json_encode($jsonBody));
-
+        $jsonBody = "{\"results\":[{\"name\":\"Games\",\"sort_name\":\"Games\",\"id\":11,\"shortname\":\"Games\"},{\"name\":\"Book Clubs\",\"sort_name\":\"Book Clubs\",\"id\":18,\"shortname\":\"Book Clubs\"}]}";
+        $httpResponse = new \GuzzleHttp\Psr7\Response( '200' , $headers, $jsonBody);
+        
+        $responseMapper = new ProviderServiceResponseMapper();
+        $response =  $responseMapper->convert($httpResponse);
+        
         $resMatchers = array();
         $resMatchers['$.body.results'] = new MatchingRule('$.body.results[*].name', array(
                 MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::REGEX_TYPE,

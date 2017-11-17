@@ -16,6 +16,7 @@
                 "method": "GET",
                 "path": "/2/categories",
                 "headers": {
+                    "Host": "api.meetup.com",
                     "Content-Type": "application/json"
                 }
             },
