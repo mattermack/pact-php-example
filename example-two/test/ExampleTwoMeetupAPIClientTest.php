@@ -7,17 +7,14 @@ require_once ('../src/ExampleTwoMeetupApiClient.php');
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
+use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use PHPUnit\Framework\TestCase;
 
 
 class ExampleTwoMeetupAPIClientTest extends TestCase
 {
-
-    const TEST_URL = "https://api.meetup.com";
-    const CONSUMER_NAME = "ExampleTwoMeetupApiClient";
-    const PROVIDER_NAME = "MeetupAPI";
-    const PACT_DIR = "D:\\Temp\\pact-examples\\";
     const version = '2';
 
     protected function setUp()
@@ -69,18 +66,25 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
 
 
         $service = new \ExampleTwoMeetupApiClient($config->getBaseUri()); // Pass in the URL to the Mock Server.
-        $response = $service->cities();
+        $serviceResponse = $service->cities();
 
 
         // do some asserts on the return
-        $this->assertEquals('200', $response->getStatusCode(), "Let's make sure we have an OK response");
+        $this->assertEquals('200', $serviceResponse->getStatusCode(), "Let's make sure we have an OK response");
 
         // do something with the body returned
-        $body = (string) $response->getBody();
+        $body = (string) $serviceResponse->getBody();
         $this->assertTrue((json_decode($body) ? true : false), "Expect the JSON to be decoded without error");
 
-        $httpService = new MockServerHttpService(new GuzzleClient(), $this->mockServerConfig);
-        $httpService->verifyInteractions();
+        $hasException = false;
+        try {
+            $httpService = new MockServerHttpService(new GuzzleClient(), $config);
+            $httpService->verifyInteractions();
+        } catch(\Exception $e) {
+            $hasException = true;
+        }
+
+        $this->assertFalse($hasException, "We expect the pacts to validate");
     }
 
     /**
@@ -89,47 +93,50 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
     public function testDashboard()
     {
         // build the request
-        $reqHeaders = array();
-        $reqHeaders["Content-Type"] = "application/json";
-        $method = HttpVerb::GET;
         $path = '/dashboard';
-        $request = new ProviderServiceRequest($method, $path, $reqHeaders);
+
+        // build the request
+        $request = new ConsumerRequest();
+        $request
+            ->setMethod('GET')
+            ->setPath($path)
+            ->addHeader('Content-Type', 'application/json');
 
         // build the response
-        $resHeaders = array();
-        $resHeaders["Content-Type"] = "application/json";
-        $response = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse('200', $resHeaders);
-        $response->setBody("{\"stats\":{\"city_top_groups\":100,\"global_top_groups\":100,\"upcoming_events\":14,\"memberships\":7,\"nearby_events\":2444}}");
+        $body = "{\"stats\":{\"city_top_groups\":100,\"global_top_groups\":100,\"upcoming_events\":14,\"memberships\":7,\"nearby_events\":2444}}";
+        $body = \json_decode($body);
+
+        $response = new ProviderResponse();
+        $response
+            ->setStatus(200)
+            ->addHeader('Content-Type', 'application/json;charset=utf-8')
+            ->setBody($body);
 
 
         // build up the expected results and appropriate responses
-        $mockService = self::$build->getMockService();
+        $config      = new MockServerEnvConfig();
+
+        $mockService = new InteractionBuilder($config);
         $mockService->given("General Meetup Dashboard")
             ->uponReceiving("A GET request to return JSON using Meetups Dashboard that is version agnostic")
             ->with($request)
             ->willRespondWith($response);
 
-        // set the host for the httpClient
-        $host = $mockService->getHost();
-        $httpClient = new MockHttpClient($host);
 
-        // build system under test
-        // inject the http client and mock server
-        $client = new ExampleTwoMeetupApiClient($httpClient, self::TEST_URL);
-        $response = $client->dashboard();
-
+        $service = new \ExampleTwoMeetupApiClient($config->getBaseUri()); // Pass in the URL to the Mock Server.
+        $serviceResponse = $service->dashboard();
 
         // do some asserts on the return
-        $this->assertEquals('200', $response->getStatusCode(), "Expect this to be a valid URL");
+        $this->assertEquals('200', $serviceResponse->getStatusCode(), "Expect this to be a valid URL");
 
-        // verify the interactions
         $hasException = false;
         try {
-            $results = $mockService->verifyInteractions();
-
-        } catch (\PhpPact\PactFailureException $e) {
+            $httpService = new MockServerHttpService(new GuzzleClient(), $config);
+            $httpService->verifyInteractions();
+        } catch(\Exception $e) {
             $hasException = true;
         }
-        $this->assertFalse($hasException, "This dashboard call get should verify the interactions and not throw an exception");
+
+        $this->assertFalse($hasException, "We expect the pacts to validate");
     }
 }

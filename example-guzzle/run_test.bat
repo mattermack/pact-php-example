@@ -1,1 +1,0 @@
-php .\vendor\phpunit\phpunit\phpunit test\ExampleGuzzleMeetupAPIClientTest.php

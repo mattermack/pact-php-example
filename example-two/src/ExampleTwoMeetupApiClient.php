@@ -1,7 +1,6 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Uri;
 
 class ExampleTwoMeetupApiClient
 {
@@ -26,7 +25,6 @@ class ExampleTwoMeetupApiClient
     {
         $uri = $this->baseUri;
         $uri = $uri->withPath(ExampleTwoMeetupApiClient::version . '/cities');
-        $uri = $uri->withPort(7200);
 
         $response = $this->httpClient->get($uri, [
             'headers' => ['Content-Type' => 'application/json']
@@ -38,14 +36,16 @@ class ExampleTwoMeetupApiClient
     /**
      * @return \Psr\Http\Message\ResponseInterface
      */
-    /*
     public function dashboard()
     {
-        $response = $this->httpClient->get(new Uri($this->baseUri . '/dashboard'), [
+        $uri = $this->baseUri;
+        $uri = $uri->withPath('dashboard');
+
+        $response = $this->httpClient->get($uri, [
             'headers' => ['Content-Type' => 'application/json']
         ]);
 
         return $response;
     }
-    */
+
 }
