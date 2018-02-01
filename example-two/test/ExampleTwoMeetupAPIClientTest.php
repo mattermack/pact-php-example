@@ -78,8 +78,7 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
 
         $hasException = false;
         try {
-            $httpService = new MockServerHttpService(new GuzzleClient(), $config);
-            $httpService->verifyInteractions();
+            $mockService->verify();
         } catch(\Exception $e) {
             $hasException = true;
         }
@@ -131,8 +130,7 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
 
         $hasException = false;
         try {
-            $httpService = new MockServerHttpService(new GuzzleClient(), $config);
-            $httpService->verifyInteractions();
+            $mockService->verify();
         } catch(\Exception $e) {
             $hasException = true;
         }
