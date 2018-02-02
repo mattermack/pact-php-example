@@ -1,17 +1,25 @@
 <?php
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Uri;
 
 class ExampleOneMeetupApiClient
 {
     const version = "2";
 
-    private $_httpClient;
-    private $_baseUrl;
+    /**
+     * @var GuzzleHttp\Client
+     */
+    private $httpClient;
 
-    public function __construct($baseUrl)
+    /**
+     * @var \GuzzleHttp\Psr7\Uri
+     */
+    private $baseUri;
+
+    public function __construct($baseUri)
     {
-        $this->_httpClient = new Client();
-        $this->_baseUrl = $baseUrl;
+        $this->httpClient = new Client();
+        $this->baseUri = $baseUri;
     }
 
     /**

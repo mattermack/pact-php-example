@@ -2,7 +2,8 @@
 require_once ("../vendor/autoload.php");
 require_once ("ExampleOneMeetupApiClient.php");
 
-$meetup = new ExampleOneMeetupApiClient("https://api.meetup.com");
+$uri = new GuzzleHttp\Psr7\Uri("https://api.meetup.com");
+$meetup = new ExampleOneMeetupApiClient($uri);
 
 // https://www.meetup.com/meetup_api/docs/2/categories/
 //https://secure.meetup.com/meetup_api/console/?path=/2/categories
