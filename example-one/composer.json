@@ -1,16 +1,12 @@
 {
   "prefer-stable": true,
   "minimum-stability": "dev",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/mattermack/JsonPath"
-    }
-  ],
-  "require": {
-    "mattersight/phppact": "^2.0"
+  "require":
+  {
+    "mattersight/phppact": "dev-migrate-to-ruby-backend"
   },
-  "require-dev": {
+  "require-dev":
+  {
     "phpunit/phpunit": "^6.2"
   }
 }

@@ -1,4 +1,5 @@
 <?php
+use GuzzleHttp\Client;
 
 class ExampleOneMeetupApiClient
 {
@@ -7,9 +8,9 @@ class ExampleOneMeetupApiClient
     private $_httpClient;
     private $_baseUrl;
 
-    public function __construct($httpClient, $baseUrl)
+    public function __construct($baseUrl)
     {
-        $this->_httpClient = $httpClient;
+        $this->_httpClient = new Client();
         $this->_baseUrl = $baseUrl;
     }
 
@@ -18,15 +19,13 @@ class ExampleOneMeetupApiClient
      */
     public function categories()
     {
-        $uri = (new \Windwalker\Uri\PsrUri($this->_baseUrl))
-            ->withPath('/' . ExampleOneMeetupApiClient::version . '/categories');
+        $uri = $this->baseUri;
+        $uri = $uri->withPath(ExampleOneMeetupApiClient::version . '/categories');
 
-        $httpRequest = (new \Windwalker\Http\Request\Request())
-            ->withUri($uri)
-            ->withAddedHeader("Content-Type", "application/json")
-            ->withMethod("get");
+        $response = $this->httpClient->get($uri, [
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
 
-        return $this->_httpClient->sendRequest($httpRequest);
+        return $response;
     }
-
 }

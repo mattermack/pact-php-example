@@ -2,57 +2,50 @@
 
 use PHPUnit\Framework\TestCase;
 
+use GuzzleHttp\Psr7\Uri;
+use PhpPact\Broker\Service\BrokerHttpService;
+use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
+use PhpPact\Standalone\ProviderVerifier\Verifier;
+
 class ExampleApiServerTest extends TestCase
 {
-    const PACT_DIR = "D:\\Temp\\pact-examples\\";
-
-    /**
-     * @test
-     */
-    public function testServerExists() {
-
-        $http = new \Windwalker\Http\HttpClient();
-        $uri = 'http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT . '/index.php';
-
-        $response = $http->get($uri);
-        $status = $response->getStatusCode();
-
-        $this->assertEquals(200, (int) $status, "Expect a 200 status code");
-    }
+    const PACT_DIR = "D:\\Temp\\";
 
     /**
      * @test
      */
     public function testExampleOne() {
 
-        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
+        $url = 'http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 
-        $httpClient = new \Windwalker\Http\HttpClient();
+        $config = new VerifierConfig();
+        $config
+            ->setProviderName('ExampleTwo') // Providers name to fetch.
+            ->setProviderBaseUrl(new Uri($url)) // URL of the Provider.
+            ->setBrokerUri(new Uri('http://localhost')) ;
 
-        $pactVerifier = new \PhpPact\PactVerifier($uri);
         $hasException = false;
         try {
 
-            $json = self::PACT_DIR . 'exampleonemeetupapiclient-meetupapi.json';
+            $file = self::PACT_DIR . 'exampletwo-exampleapi.json';
 
             // could be build an object mapper to make this easier
 
-            $pactVerifier->providerState("General Meetup Categories")
-                ->serviceProvider("MeetupApi", $httpClient)
-                ->honoursPactWith("ExampleOneMeetupApiClient")
-                ->pactUri($json)
-                ->verify();
+            $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
+            $verifier->verifyFiles(array($file));
 
-        }catch(\PhpPact\PactFailureException $e) {
+        }catch(\Exception $e) {
             $hasException = true;
         }
+
         $this->assertFalse($hasException, "Expect Pact to validate.");
     }
 
     /**
-     * @test
+     * @tst
      */
-    public function testExampleTwo() {
+    public function tstExampleTwo() {
 
         $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 

@@ -1,7 +1,5 @@
 <?php
 
-namespace Consumer\Service;
-
 require_once ('../src/ExampleTwoMeetupApiClient.php');
 
 use PhpPact\Consumer\InteractionBuilder;

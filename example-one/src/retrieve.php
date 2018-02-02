@@ -1,7 +1,8 @@
 <?php
+require_once ("../vendor/autoload.php");
+require_once ("ExampleOneMeetupApiClient.php");
 
-$httpClient = new \Windwalker\Http\HttpClient();
-$meetup = new ExampleOneMeetupApiClient($httpClient, "https://api.meetup.com");
+$meetup = new ExampleOneMeetupApiClient("https://api.meetup.com");
 
 // https://www.meetup.com/meetup_api/docs/2/categories/
 //https://secure.meetup.com/meetup_api/console/?path=/2/categories
