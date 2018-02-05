@@ -5,10 +5,11 @@ require_once ('../src/ExampleOneMeetupApiClient.php');
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Http\GuzzleClient;
+use PhpPact\Consumer\Matcher\RegexMatcher;
+use PhpPact\Consumer\Matcher\LikeMatcher;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
-use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use PHPUnit\Framework\TestCase;
+
 
 
 class ExampleOneMeetupAPIClientTest extends TestCase
@@ -31,23 +32,30 @@ class ExampleOneMeetupAPIClientTest extends TestCase
             ->addHeader('Content-Type', 'application/json');
 
         // build the response
-        $body = \json_decode("{\"results\":[{\"name\":\"Games\",\"sort_name\":\"Games\",\"id\":11,\"shortname\":\"Games\"},{\"name\":\"Book Clubs\",\"sort_name\":\"Book Clubs\",\"id\":18,\"shortname\":\"Book Clubs\"}]}");
+        $category1 = new stdClass();
+        $category1->name = new RegexMatcher('Games', 'Games|Book Clubs');
+        $category1->sort_name = new RegexMatcher('Games', 'Games|Book Clubs');
+        $category1->id = new LikeMatcher(11);
+        $category1->shortname = new RegexMatcher('Games', 'Games|Book Clubs');
+
+        $category2 = new stdClass();
+        $category2->name = "Book Clubs";
+        $category2->sort_name = "Book Clubs";
+        $category2->id = 18;
+        $category2->shortname = "Book Clubs";
+
+        $body = array(
+            "results" => array(
+                $category1,
+                $category2
+            )
+        );
 
         $response = new ProviderResponse();
         $response
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
             ->setBody($body);
-
-        /*
-        $resMatchers = array();
-        $resMatchers['$.body.results'] = new MatchingRule('$.body.results[*].name', array(
-                MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::REGEX_TYPE,
-                MatcherRuleTypes::REGEX_PATTERN => 'Games|Book Clubs')
-        );
-
-        $response->setMatchingRules($resMatchers);
-        */
 
         // build up the expected results and appropriate responses
         $config      = new MockServerEnvConfig();
