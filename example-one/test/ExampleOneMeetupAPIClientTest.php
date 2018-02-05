@@ -33,10 +33,10 @@ class ExampleOneMeetupAPIClientTest extends TestCase
 
         // build the response
         $category1 = new stdClass();
-        $category1->name = new RegexMatcher('Games', 'Games|Book Clubs');
-        $category1->sort_name = new RegexMatcher('Games', 'Games|Book Clubs');
-        $category1->id = new LikeMatcher(11);
-        $category1->shortname = new RegexMatcher('Games', 'Games|Book Clubs');
+        $category1->name = 'games';
+        $category1->sort_name = 'Games';
+        $category1->id = 11;
+        $category1->shortname = 'Games'; 
 
         $category2 = new stdClass();
         $category2->name = "Book Clubs";
@@ -55,7 +55,8 @@ class ExampleOneMeetupAPIClientTest extends TestCase
         $response
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
-            ->setBody($body);
+            ->setBody($body)
+            ->addMatchingRule("$.body.results[1].name", new RegexMatcher('Games', '[gbBG]')); //begins with either a g,b,B,G characters
 
         // build up the expected results and appropriate responses
         $config      = new MockServerEnvConfig();

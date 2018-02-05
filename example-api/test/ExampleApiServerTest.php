@@ -41,9 +41,9 @@ class ExampleApiServerTest extends TestCase
     }
 
     /**
-     * @test
+     * @tes
      */
-    public function testExampleTwo() {
+    public function tstExampleTwo() {
 
         $setUpFunction = function() {
             $fileName = "index.php";
