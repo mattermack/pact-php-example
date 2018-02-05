@@ -10,49 +10,40 @@ use PhpPact\Standalone\ProviderVerifier\Verifier;
 
 class ExampleApiServerTest extends TestCase
 {
-    const PACT_DIR = "D:\\Temp\\";
+    const PACT_DIR = "D:/Temp/";
 
     /**
      * @test
      */
     public function testExampleOne() {
-
         $url = 'http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 
         $config = new VerifierConfig();
         $config
-            ->setProviderName('ExampleTwo') // Providers name to fetch.
+            ->setProviderName('ExampleOne') // Providers name to fetch.
             ->setProviderBaseUrl(new Uri($url)) // URL of the Provider.
             ->setBrokerUri(new Uri('http://localhost')) ;
 
         $hasException = false;
+        $exceptionDetails = "";
         try {
-
-            $file = self::PACT_DIR . 'exampletwo-exampleapi.json';
+            $file = self::PACT_DIR . 'exampleone-exampleapi.json';
 
             // could be build an object mapper to make this easier
-
             $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
             $verifier->verifyFiles(array($file));
-
-        }catch(\Exception $e) {
+        } catch(\Exception $e) {
             $hasException = true;
+            $exceptionDetails = $e->getMessage();
         }
 
-        $this->assertFalse($hasException, "Expect Pact to validate.");
+        $this->assertFalse($hasException, "Expect Pact to validate: " . $exceptionDetails);
     }
 
     /**
-     * @tst
+     * @test
      */
-    public function tstExampleTwo() {
-
-        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
-
-        $httpClient = new \Windwalker\Http\HttpClient();
-
-        $pactVerifier = new \PhpPact\PactVerifier($uri);
-        $hasException = false;
+    public function testExampleTwo() {
 
         $setUpFunction = function() {
             $fileName = "index.php";
@@ -64,21 +55,28 @@ class ExampleApiServerTest extends TestCase
             file_put_contents($absolutePath, $this->dashboardState());
         };
 
+        $url = 'http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 
+        $config = new VerifierConfig();
+        $config
+            ->setProviderName('ExampleTwo') // Providers name to fetch.
+            ->setProviderBaseUrl(new Uri($url)) // URL of the Provider.
+            ->setBrokerUri(new Uri('http://localhost')) ;
 
+        $hasException = false;
+        $exceptionDetails = "";
         try {
-            $json = self::PACT_DIR . 'exampletwomeetupapiclient-meetupapi.json';
+            $file = self::PACT_DIR . 'exampletwo-exampleapi.json';
 
-            $pactVerifier->providerState("General Meetup Dashboard", $setUpFunction)
-                ->serviceProvider("MeetupApi", $httpClient)
-                ->honoursPactWith("ExampleTwoMeetupApiClient")
-                ->pactUri($json)
-                ->verify(); // note that this should test all as we can run setup and tear down
-
-        }catch(\PhpPact\PactFailureException $e) {
+            // could be build an object mapper to make this easier
+            $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
+            $verifier->verifyFiles(array($file));
+        } catch(\Exception $e) {
             $hasException = true;
+            $exceptionDetails = $e->getMessage();
         }
-        $this->assertFalse($hasException, "Expect Pact to validate.");
+
+        $this->assertFalse($hasException, "Expect Pact to validate: " . $exceptionDetails);
     }
 
     private function dashboardState()
