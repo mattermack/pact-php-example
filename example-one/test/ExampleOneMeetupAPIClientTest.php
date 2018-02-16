@@ -5,8 +5,7 @@ require_once ('../src/ExampleOneMeetupApiClient.php');
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Consumer\Matcher\RegexMatcher;
-use PhpPact\Consumer\Matcher\LikeMatcher;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PHPUnit\Framework\TestCase;
 
@@ -32,31 +31,22 @@ class ExampleOneMeetupAPIClientTest extends TestCase
             ->addHeader('Content-Type', 'application/json');
 
         // build the response
-        $category1 = new stdClass();
-        $category1->name = 'games';
-        $category1->sort_name = 'Games';
-        $category1->id = 11;
-        $category1->shortname = 'Games'; 
+        $matcher = new Matcher();
 
-        $category2 = new stdClass();
-        $category2->name = "Book Clubs";
-        $category2->sort_name = "Book Clubs";
-        $category2->id = 18;
-        $category2->shortname = "Book Clubs";
+        $category1 = new \stdClass();
+        $category1->name = $matcher->regex('Games','[gbBG]');
+        $category1->sort_name = 'Games';
+        $category1->id = 11;
+        $category1->shortname = 'Games';
 
-        $body = array(
-            "results" => array(
-                $category1,
-                $category2
-            )
-        );
+        $body = new \stdClass();
+        $body->results = $matcher->eachLike($category1);
 
         $response = new ProviderResponse();
         $response
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
-            ->setBody($body)
-            ->addMatchingRule("$.body.results[1].name", new RegexMatcher('Games', '[gbBG]')); //begins with either a g,b,B,G characters
+            ->setBody($body);
 
         // build up the expected results and appropriate responses
         $config      = new MockServerEnvConfig();
