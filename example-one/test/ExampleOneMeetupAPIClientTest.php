@@ -34,13 +34,13 @@ class ExampleOneMeetupAPIClientTest extends TestCase
         $matcher = new Matcher();
 
         $category1 = new \stdClass();
-        $category1->name = $matcher->regex('Games','[gbBG]');
-        $category1->sort_name = 'Games';
-        $category1->id = 11;
-        $category1->shortname = 'Games';
+        $category1->name = $matcher->regex('Games','[gbBG]');
+        $category1->sort_name = 'Games';
+        $category1->id = 11;
+        $category1->shortname = 'Games';
 
         $body = new \stdClass();
-        $body->results = $matcher->eachLike($category1);
+        $body->results= $matcher->eachLike($category1);
 
         $response = new ProviderResponse();
         $response

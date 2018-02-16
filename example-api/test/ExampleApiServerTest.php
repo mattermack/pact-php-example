@@ -30,8 +30,8 @@ class ExampleApiServerTest extends TestCase
             $file = self::PACT_DIR . 'exampleone-exampleapi.json';
 
             // could be build an object mapper to make this easier
-            $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
-            $verifier->verifyFiles(array($file));
+            $verifier = new Verifier($config);
+            $verifier->verifyFiles([$file]);
         } catch(\Exception $e) {
             $hasException = true;
             $exceptionDetails = $e->getMessage();
@@ -69,7 +69,7 @@ class ExampleApiServerTest extends TestCase
             $file = self::PACT_DIR . 'exampletwo-exampleapi.json';
 
             // could be build an object mapper to make this easier
-            $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
+            $verifier = new Verifier($config);
             $verifier->verifyFiles(array($file));
         } catch(\Exception $e) {
             $hasException = true;

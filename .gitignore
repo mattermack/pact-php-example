@@ -259,3 +259,4 @@ vendor/*
 /example-guzzle/vendor/*
 /example-api/composer.lock
 /example-guzzle/composer.lock
+/example-api/test/reports/pacts
