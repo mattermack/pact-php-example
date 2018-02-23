@@ -49,7 +49,7 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         $response = new ProviderResponse();
         $response
             ->setStatus(200)
-            ->addHeader('Content-Type', 'application/json;charset=utf-8')
+            ->addHeader('Content-Type', 'application/json')
             ->setBody($body);
 
 
@@ -106,7 +106,7 @@ class ExampleTwoMeetupAPIClientTest extends TestCase
         $response = new ProviderResponse();
         $response
             ->setStatus(200)
-            ->addHeader('Content-Type', 'application/json;charset=utf-8')
+            ->addHeader('Content-Type', 'application/json')
             ->setBody($body);
 
 

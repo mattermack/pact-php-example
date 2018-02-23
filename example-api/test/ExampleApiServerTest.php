@@ -24,6 +24,7 @@ class ExampleApiServerTest extends TestCase
             ->setProviderBaseUrl(new Uri($url)) // URL of the Provider.
             ->setBrokerUri(new Uri('http://localhost')) ;
 
+
         $hasException = false;
         $exceptionDetails = "";
         try {
@@ -41,19 +42,10 @@ class ExampleApiServerTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
-    public function tstExampleTwo() {
+    public function testExampleTwo() {
 
-        $setUpFunction = function() {
-            $fileName = "index.php";
-            $currentDir = dirname(__FILE__);
-            $absolutePath = realpath($currentDir . '/../src/dashboard' );
-            $absolutePath .= '/' . $fileName;
-
-
-            file_put_contents($absolutePath, $this->dashboardState());
-        };
 
         $url = 'http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 
@@ -61,8 +53,10 @@ class ExampleApiServerTest extends TestCase
         $config
             ->setProviderName('ExampleTwo') // Providers name to fetch.
             ->setProviderBaseUrl(new Uri($url)) // URL of the Provider.
-            ->setBrokerUri(new Uri('http://localhost')) ;
+            ->setBrokerUri(new Uri('http://localhost')) // do we need this?
+            ->setProviderStatesSetupUrl($url . '/state/exampletwosetup.php');
 
+        error_log("about to verify");
         $hasException = false;
         $exceptionDetails = "";
         try {
@@ -75,31 +69,10 @@ class ExampleApiServerTest extends TestCase
             $hasException = true;
             $exceptionDetails = $e->getMessage();
         }
+        error_log("verified verify");
 
         $this->assertFalse($hasException, "Expect Pact to validate: " . $exceptionDetails);
     }
 
-    private function dashboardState()
-    {
-        $str = <<<STR
-<?php
-
-header('Content-Type: application/json');
-
-?>
-{
-    "stats":
-    {
-        "city_top_groups": 100,
-        "global_top_groups": 100,
-        "upcoming_events": 14,
-        "memberships": 7,
-        "nearby_events": 2444
-    }
-}
-STR;
-        return $str;
-
-    }
 
 }
