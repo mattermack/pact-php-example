@@ -56,7 +56,6 @@ class ExampleApiServerTest extends TestCase
             ->setBrokerUri(new Uri('http://localhost')) // do we need this?
             ->setProviderStatesSetupUrl($url . '/state/exampletwosetup.php');
 
-        error_log("about to verify");
         $hasException = false;
         $exceptionDetails = "";
         try {
@@ -69,7 +68,6 @@ class ExampleApiServerTest extends TestCase
             $hasException = true;
             $exceptionDetails = $e->getMessage();
         }
-        error_log("verified verify");
 
         $this->assertFalse($hasException, "Expect Pact to validate: " . $exceptionDetails);
     }
