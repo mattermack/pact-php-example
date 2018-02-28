@@ -1,16 +1,25 @@
 <?php
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Uri;
 
 class ExampleOneMeetupApiClient
 {
     const version = "2";
 
-    private $_httpClient;
-    private $_baseUrl;
+    /**
+     * @var GuzzleHttp\Client
+     */
+    private $httpClient;
 
-    public function __construct($httpClient, $baseUrl)
+    /**
+     * @var \GuzzleHttp\Psr7\Uri
+     */
+    private $baseUri;
+
+    public function __construct($baseUri)
     {
-        $this->_httpClient = $httpClient;
-        $this->_baseUrl = $baseUrl;
+        $this->httpClient = new Client();
+        $this->baseUri = $baseUri;
     }
 
     /**
@@ -18,15 +27,13 @@ class ExampleOneMeetupApiClient
      */
     public function categories()
     {
-        $uri = (new \Windwalker\Uri\PsrUri($this->_baseUrl))
-            ->withPath('/' . ExampleOneMeetupApiClient::version . '/categories');
+        $uri = $this->baseUri;
+        $uri = $uri->withPath(ExampleOneMeetupApiClient::version . '/categories');
 
-        $httpRequest = (new \Windwalker\Http\Request\Request())
-            ->withUri($uri)
-            ->withAddedHeader("Content-Type", "application/json")
-            ->withMethod("get");
+        $response = $this->httpClient->get($uri, [
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
 
-        return $this->_httpClient->sendRequest($httpRequest);
+        return $response;
     }
-
 }

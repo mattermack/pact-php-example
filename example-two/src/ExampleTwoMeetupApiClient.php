@@ -1,16 +1,21 @@
 <?php
 
+use GuzzleHttp\Client;
+
 class ExampleTwoMeetupApiClient
 {
-    const version = "2";
+    const version = '2';
 
-    private $_httpClient;
-    private $_baseUrl;
+    /** @var \PhpPact\Http\ClientInterface */
+    private $httpClient;
 
-    public function __construct($httpClient, $baseUrl)
+    /** @var \GuzzleHttp\Psr7\Uri */
+    private $baseUri;
+
+    public function __construct($baseUri)
     {
-        $this->_httpClient = $httpClient;
-        $this->_baseUrl = $baseUrl;
+        $this->httpClient = new Client();
+        $this->baseUri    = $baseUri;
     }
 
     /**
@@ -18,15 +23,14 @@ class ExampleTwoMeetupApiClient
      */
     public function cities()
     {
-        $uri = (new \Windwalker\Uri\PsrUri($this->_baseUrl))
-            ->withPath('/' . ExampleTwoMeetupApiClient::version . '/cities');
+        $uri = $this->baseUri;
+        $uri = $uri->withPath(ExampleTwoMeetupApiClient::version . '/cities');
 
-        $httpRequest = (new \Windwalker\Http\Request\Request())
-            ->withUri($uri)
-            ->withAddedHeader("Content-Type", "application/json")
-            ->withMethod("get");
+        $response = $this->httpClient->get($uri, [
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
 
-        return $this->_httpClient->sendRequest($httpRequest);
+        return $response;
     }
 
     /**
@@ -34,14 +38,14 @@ class ExampleTwoMeetupApiClient
      */
     public function dashboard()
     {
-        $uri = (new \Windwalker\Uri\PsrUri($this->_baseUrl))
-            ->withPath('/dashboard');
+        $uri = $this->baseUri;
+        $uri = $uri->withPath('dashboard');
 
-        $httpRequest = (new \Windwalker\Http\Request\Request())
-            ->withUri($uri)
-            ->withAddedHeader("Content-Type", "application/json")
-            ->withMethod("get");
+        $response = $this->httpClient->get($uri, [
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
 
-        return $this->_httpClient->sendRequest($httpRequest);
+        return $response;
     }
+
 }

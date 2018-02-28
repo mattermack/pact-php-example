@@ -1,7 +1,12 @@
 <?php
+require_once ("../vendor/autoload.php");
+require_once ("ExampleOneMeetupApiClient.php");
 
-$httpClient = new \Windwalker\Http\HttpClient();
-$meetup = new ExampleOneMeetupApiClient($httpClient, "https://api.meetup.com");
+$uri = new \GuzzleHttp\Psr7\Uri("http://localhost:1349");
+$meetup = new \ExampleOneMeetupApiClient($uri);
+
+$categories = $meetup->categories();
+echo print_r((string) $categories->getBody(), true);
 
 // https://www.meetup.com/meetup_api/docs/2/categories/
 //https://secure.meetup.com/meetup_api/console/?path=/2/categories
@@ -26,4 +31,3 @@ HTTP/1.1 200 success
     ]
 }
  */
-$categories = $meetup->categories();
