@@ -1,9 +1,9 @@
 # Pact PHP Examples
-Here is a basic end-to-end example sans Broker and CI integration for [Pact-PHP](https://github.com/pact-foundation/pact-php/)
-
+Here is a basic end-to-end example sans Broker and CI integration for [Pact-PHP](https://github.com/pact-foundation/pact-php/).  
 This example is based on the [Meetup.com API](https://www.meetup.com/meetup_api/) written for the [Austin PHP Meetup](https://www.meetup.com/austinphp/).  
-
 Here we setup a scenario with two consumers/clients and one provider/api.  
+
+This example is targeting the Pact-PHP 3.X and above.   If you want to look at the [2.2.1](https://github.com/mattermack/example-pact-php/tree/2.2.1) tag to see the Pact-PHP 2.X implementation.
 
 ## Example One Client
 1. Use the Meetup.com API to pull `categories` version 2
