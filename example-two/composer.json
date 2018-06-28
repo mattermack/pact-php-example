@@ -1,9 +1,7 @@
 {
-  "prefer-stable": true,
-  "minimum-stability": "dev",
   "require":
   {
-    "mattersight/phppact": "^4.0"
+    "pact-foundation/pact-php": "^4.0"
   },
   "require-dev":
   {
